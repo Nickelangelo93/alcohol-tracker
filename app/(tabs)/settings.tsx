@@ -652,6 +652,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xl,
     fontWeight: '800',
     paddingVertical: 8,
+    textAlign: 'center',
   },
   themeButtons: {
     flexDirection: 'row',
