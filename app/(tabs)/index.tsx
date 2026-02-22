@@ -348,7 +348,7 @@ export default function HomeScreen() {
               <AnimatedTouchable
                 onPress={handleLogPress}
                 activeOpacity={0.85}
-                style={[animatedButtonStyle, shadows.button]}
+                style={[animatedButtonStyle, shadows.button, { borderRadius: borderRadius.xxl }]}
               >
                 <View style={[styles.logButton, { backgroundColor: themeColors.primary }]}>
                   <Text style={styles.logButtonEmoji}>🍺</Text>
@@ -517,9 +517,11 @@ const styles = StyleSheet.create({
   },
   quickAddWrapper: {
     flex: 0.4,
+    borderRadius: borderRadius.xxl,
   },
   logNewWrapper: {
     flex: 0.6,
+    borderRadius: borderRadius.xxl,
   },
   quickAddButton: {
     borderRadius: borderRadius.xxl,
