@@ -1,0 +1,211 @@
+const nl = {
+  // Tab bar
+  tabs: {
+    home: 'Home',
+    history: 'Geschiedenis',
+    statistics: 'Statistieken',
+    settings: 'Instellingen',
+  },
+
+  // Home screen
+  home: {
+    title: 'Alcohol Tracker',
+    subtitle: 'Houd je consumptie bij',
+    timerLabel: 'TIJD SINDS LAATSTE DRANKJE',
+    dailyLimit: '🎯 Daglimiet',
+    today: 'Vandaag',
+    caloriesTitle: '🔥 Calorieën vandaag',
+    caloriesAvg: (avg: number) => `Gemiddeld ${avg} kcal per drankje`,
+    bacTitle: '🧪 BAC Schatting',
+    bacSetupText: 'Stel je gewicht en geslacht in om een promillage-schatting te zien.',
+    bacSetupButton: 'Instellen →',
+    bacTrendRising: '↑ Stijgend',
+    bacTrendDeclining: '↓ Dalend',
+    bacSoberIn: (time: string) => `Nuchter over ${time}`,
+    bacSoberAgain: 'Weer nuchter',
+    bacDisclaimer: 'Dit is een schatting — niet gebruiken voor rijbeslissingen',
+    logDrink: 'Log drankje',
+    logADrink: 'Log een drankje',
+    recentTitle: '🕐 Recent',
+  },
+
+  // History screen
+  history: {
+    title: 'Geschiedenis',
+    subtitle: 'Bekijk je drinkpatroon',
+    today: 'Vandaag',
+    dayNames: ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'] as string[],
+    deleteDrinkTitle: 'Drankje verwijderen',
+    deleteDrinkMessage: (drinkLabel: string) =>
+      `Weet je zeker dat je dit ${drinkLabel} wilt verwijderen?`,
+    cancel: 'Annuleren',
+    delete: 'Verwijderen',
+    drinkSingular: 'drankje',
+    drinkPlural: 'drankjes',
+    noDrinks: 'Geen drankjes op deze dag',
+    noDrinksSubtext: 'Goed bezig!',
+  },
+
+  // Statistics screen
+  statistics: {
+    title: 'Statistieken',
+    subtitle: 'Inzicht in je drinkpatroon',
+    loading: 'Laden...',
+    avgPerWeek: 'Gem. per week',
+    dryDaysStreak: 'Droge dagen op rij',
+    longestStreak: 'Langste streak',
+    dryDaysMonth: 'Droge dagen deze maand',
+    caloriesThisWeek: 'Calorieën deze week',
+    avgCaloriesPerDrinkDay: 'Gem. kcal per drinkdag',
+    highestBacMonth: 'Hoogste BAC deze maand',
+    avgBacPerDrinkDay: 'Gem. BAC per drinkdag',
+    weeklyOverview: '📅 Wekelijks overzicht',
+    weeklySubtitle: 'Afgelopen 8 weken',
+    monthlyOverview: '📈 Maandelijks overzicht',
+    monthlySubtitle: 'Afgelopen 6 maanden',
+  },
+
+  // Settings screen
+  settings: {
+    title: 'Instellingen',
+    subtitle: 'Pas de app aan je wensen aan',
+    dailyLimit: 'Daglimiet',
+    dailyLimitDesc: 'Maximaal aantal drankjes per dag',
+    profile: 'Profiel',
+    profileDesc: 'Voor BAC (promillage) berekening',
+    weightLabel: 'Gewicht (kg)',
+    genderLabel: 'Geslacht',
+    genderMale: 'Man',
+    genderFemale: 'Vrouw',
+    genderOther: 'Anders',
+    waterReminder: 'Water herinnering',
+    waterReminderToggle: 'Herinnering aan water',
+    waterReminderDesc: 'Herinner me om water te drinken',
+    waterReminderInterval: 'Herinner me na elke',
+    waterReminderDrinks: 'drankjes',
+    theme: 'Thema',
+    themeDark: 'Donker',
+    themeLight: 'Licht',
+    language: 'Taal',
+    languageNl: 'Nederlands',
+    languageEn: 'English',
+    notifications: 'Notificaties',
+    dailyReminder: 'Dagelijkse herinnering',
+    dailyReminderDesc: 'Herinner me om te loggen',
+    limitWarning: 'Limiet waarschuwing',
+    limitWarningDesc: 'Waarschuw als ik bij mijn limiet kom',
+    data: 'Data',
+    exportCsv: 'Exporteer als CSV',
+    exportCsvDesc: 'Download al je data',
+    importCsv: 'Importeer CSV',
+    importCsvDesc: 'Herstel vanuit een backup',
+    resetData: 'Wis alle drankjes',
+    resetDataDesc: 'Verwijder alle gelogde drankjes',
+    resetDataTitle: 'Alle drankjes wissen',
+    resetDataMessage: 'Weet je zeker dat je alle gelogde drankjes wilt verwijderen? Dit kan niet ongedaan worden gemaakt.',
+    resetDataConfirm: 'Alles wissen',
+    resetDataSuccess: 'Gelukt',
+    resetDataSuccessMsg: 'Alle drankjes zijn verwijderd.',
+    // Tip Jar
+    tipJar: {
+      title: 'Steun de ontwikkelaar',
+      description: 'Vind je de app handig? Met een vrijwillige fooi help je de ontwikkeling vooruit!',
+      tipSmall: 'Klein',
+      tipMedium: 'Gemiddeld',
+      tipLarge: 'Groot',
+      tipDisclaimer: 'Fooien zijn vrijwillig en ontgrendelen geen extra functies.',
+      thankYouTitle: 'Bedankt!',
+      thankYouMessage: 'Je steun wordt enorm gewaardeerd!',
+      purchaseError: 'Er ging iets mis met de aankoop. Probeer het later opnieuw.',
+    },
+    aboutTitle: 'Alcohol Tracker v1.0.0',
+    aboutText: 'Alle data wordt lokaal op je apparaat opgeslagen. Geen account nodig, geen data verzameling.',
+    // Alert strings
+    exportNoData: 'Geen data',
+    exportNoDataMsg: 'Er zijn nog geen drankjes om te exporteren.',
+    exportDialogTitle: 'Exporteer drankjes data',
+    error: 'Fout',
+    exportErrorMsg: 'Er ging iets mis bij het exporteren.',
+    importErrorNoData: 'Het CSV-bestand bevat geen data.',
+    importErrorNoValid: 'Geen geldige drankjes gevonden.',
+    importErrorMsg: 'Er ging iets mis bij het importeren.',
+    importTitle: 'Importeren',
+    importConfirm: (count: number) => `${count} drankjes gevonden. Wil je deze importeren?`,
+    importCancel: 'Annuleren',
+    importButton: 'Importeren',
+    importSuccess: 'Gelukt',
+    importSuccessMsg: (count: number) => `${count} drankjes geïmporteerd.`,
+  },
+
+  // Drink log modal
+  modal: {
+    title: 'Log een drankje',
+    subtitle: 'Tik op een type om te loggen',
+    chooseSizeOpen: '▲ Kies maat',
+    chooseSizeClosed: '▼ Kies maat',
+    manualTimeOn: '⏰ Handmatige tijd aan',
+    manualTimeQuestion: '🕐 Eerder drankje toevoegen?',
+    dateLabel: 'Datum',
+    timeLabel: 'Tijd',
+    adding: 'Bezig...',
+    addButton: (emoji: string) => `${emoji} Toevoegen`,
+    cancel: 'Annuleren',
+  },
+
+  // Water reminder modal
+  water: {
+    title: 'Tijd voor water! 💧',
+    subtitle: 'Je hebt al een paar drankjes op. Drink een glas water om gehydrateerd te blijven.',
+    logButton: 'Glas water loggen',
+    skipButton: 'Overslaan',
+    logged: (count: number) => count === 1 ? '1 glas vandaag' : `${count} glazen vandaag`,
+  },
+
+  // Components
+  components: {
+    waterBanner: 'Tijd voor een glas water!',
+    progressOf: 'van',
+    progressToday: 'vandaag',
+    progressLimitReached: 'Limiet bereikt',
+  },
+
+  // Drink labels
+  drinks: {
+    labels: {
+      beer: 'Bier',
+      beer_fluitje: 'Fluitje',
+      beer_vaasje: 'Vaasje',
+      beer_pint: 'Pint',
+      beer_blikje: 'Blikje',
+      wine: 'Wijn',
+      spirits: 'Sterke drank',
+      cocktail: 'Cocktail',
+      other: 'Overig',
+    } as Record<string, string>,
+    beerDescriptions: {
+      beer_fluitje: '~180ml',
+      beer_vaasje: '~250ml',
+      beer_pint: '~500ml',
+      beer_blikje: '~330ml',
+    } as Record<string, string>,
+  },
+
+  // Utility strings
+  utils: {
+    sober: 'Nuchter',
+    hourAbbrev: 'u',
+    hourWord: 'uur',
+    dayWord: 'dag',
+    daysWord: 'dagen',
+    noDrinksLogged: 'Nog geen drankjes gelogd',
+  },
+
+  // Notifications
+  notifications: {
+    waterTitle: '💧 Water tijd!',
+    waterBody: 'Drink een glas water voor je verdergaat.',
+  },
+};
+
+export type Translations = typeof nl;
+export default nl;
