@@ -652,6 +652,12 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     fontSize: fontSize.xl,
     fontWeight: '800',
+    textAlignVertical: 'center',
+    ...Platform.select({
+      web: {
+        lineHeight: 44,
+      },
+    }),
   },
   themeButtons: {
     flexDirection: 'row',
