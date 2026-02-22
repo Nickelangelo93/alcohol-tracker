@@ -648,16 +648,10 @@ const styles = StyleSheet.create({
   },
   limitInput: {
     width: 64,
-    height: 44,
     borderRadius: borderRadius.lg,
     fontSize: fontSize.xl,
     fontWeight: '800',
-    textAlignVertical: 'center',
-    ...Platform.select({
-      web: {
-        lineHeight: 44,
-      },
-    }),
+    paddingVertical: 8,
   },
   themeButtons: {
     flexDirection: 'row',
