@@ -152,7 +152,7 @@ export default function HomeScreen() {
         >
           {/* Header */}
           <AnimatedView entering={FadeIn.duration(500)}>
-            <Text style={[styles.header, { color: themeColors.text }]}>{t.home.title}</Text>
+            <Text style={[styles.header, { color: themeColors.text }]}>{t.home.title} 🚀</Text>
             <Text style={[styles.subtitle, { color: themeColors.textSecondary }]}>
               {t.home.subtitle}
             </Text>
