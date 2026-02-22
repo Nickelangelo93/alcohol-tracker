@@ -1,4 +1,4 @@
-const CACHE_NAME = 'alcohol-tracker-v1';
+const CACHE_NAME = 'alcohol-tracker-v2';
 
 // Install: cache the app shell
 self.addEventListener('install', (event) => {
@@ -24,26 +24,14 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: cache-first strategy for app resources
+// Fetch: network-first strategy (always get latest, fallback to cache offline)
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) {
-        // Return cached, but also update cache in background
-        fetch(event.request).then((response) => {
-          if (response.ok) {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, response);
-            });
-          }
-        }).catch(() => {});
-        return cached;
-      }
-
-      return fetch(event.request).then((response) => {
+    fetch(event.request)
+      .then((response) => {
         if (response.ok) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -51,10 +39,12 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return response;
-      }).catch(() => {
-        // Offline fallback
-        return caches.match('/');
-      });
-    })
+      })
+      .catch(() => {
+        // Offline: serve from cache
+        return caches.match(event.request).then((cached) => {
+          return cached || caches.match('/');
+        });
+      })
   );
 });
