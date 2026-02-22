@@ -93,9 +93,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing.md,
+    flexWrap: 'wrap',
+    gap: spacing.xs,
   },
   label: {
     fontSize: fontSize.sm,
+    flexShrink: 1,
   },
   labelBold: {
     fontSize: fontSize.lg,

@@ -514,6 +514,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.sm,
     marginBottom: spacing.lg,
+    alignItems: 'stretch',
   },
   quickAddWrapper: {
     flex: 0.4,
@@ -525,11 +526,12 @@ const styles = StyleSheet.create({
   },
   quickAddButton: {
     borderRadius: borderRadius.xxl,
-    padding: spacing.lg,
+    padding: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.xs,
+    flex: 1,
   },
   quickAddEmoji: {
     fontSize: 20,
