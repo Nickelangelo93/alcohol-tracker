@@ -28,8 +28,8 @@ export default function TabsLayout() {
           backgroundColor: themeColors.tabBar,
           borderTopColor: themeColors.tabBarBorder,
           borderTopWidth: 0,
-          height: Platform.OS === 'web' ? 70 : 88,
-          paddingBottom: Platform.OS === 'web' ? 16 : 30,
+          height: Platform.OS === 'web' ? 80 : 88,
+          paddingBottom: Platform.OS === 'web' ? 20 : 30,
           paddingTop: 10,
           ...Platform.select({
             ios: {
