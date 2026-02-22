@@ -8,18 +8,19 @@ import { DrinkProvider } from '../src/context/DrinkContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { REVENUECAT_API_KEY } from '../src/constants/purchases';
 
-// Only import native-only modules on native
+// Import AnimatedSplash on all platforms (Metro resolves .web.tsx on web)
+import { AnimatedSplash } from '../src/components/AnimatedSplash';
+
+// Only import SplashScreen on native
 let SplashScreen: any = null;
-let AnimatedSplash: any = null;
 if (Platform.OS !== 'web') {
   SplashScreen = require('expo-splash-screen');
   SplashScreen.preventAutoHideAsync();
-  AnimatedSplash = require('../src/components/AnimatedSplash').AnimatedSplash;
 }
 
 function RootLayoutInner() {
   const { theme, themeColors } = useTheme();
-  const [showSplash, setShowSplash] = useState(Platform.OS !== 'web');
+  const [showSplash, setShowSplash] = useState(true);
 
   const handleSplashFinish = useCallback(() => {
     setShowSplash(false);
@@ -36,7 +37,7 @@ function RootLayoutInner() {
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
-      {showSplash && AnimatedSplash && <AnimatedSplash onAnimationFinish={handleSplashFinish} />}
+      {showSplash && <AnimatedSplash onAnimationFinish={handleSplashFinish} />}
     </>
   );
 }
