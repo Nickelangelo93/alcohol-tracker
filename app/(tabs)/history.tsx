@@ -12,10 +12,8 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '../../src/context/ThemeContext';
 import { useTranslation } from '../../src/context/LanguageContext';
 import { useDrinks } from '../../src/context/DrinkContext';
-import { confirmAction } from '../../src/utils/confirm';
 import { SwipeableRow } from '../../src/components/SwipeableRow';
 import { Drink } from '../../src/types';
-import { calculatePeakBAC, formatBAC, getBacLevel } from '../../src/utils/bac';
 import {
   drinkEmojis,
   drinkCalories,
@@ -213,26 +211,6 @@ export default function HistoryScreen() {
                 {selectedDateLabel}
               </Text>
               <View style={styles.dayHeaderRight}>
-                {selectedDayDrinks.length > 0 && settings.userWeight && settings.userGender && (() => {
-                  const peakBac = calculatePeakBAC(selectedDayDrinks, settings.userWeight!, settings.userGender!);
-                  const level = getBacLevel(peakBac);
-                  if (peakBac <= 0) return null;
-                  return (
-                    <View style={[styles.calorieBadge, {
-                      backgroundColor: level === 'low' ? themeColors.successSoft
-                        : level === 'moderate' ? themeColors.warningSoft
-                        : themeColors.dangerSoft,
-                    }]}>
-                      <Text style={[styles.calorieBadgeText, {
-                        color: level === 'low' ? themeColors.success
-                          : level === 'moderate' ? themeColors.warning
-                          : themeColors.danger,
-                      }]}>
-                        🧪 {formatBAC(peakBac)}%
-                      </Text>
-                    </View>
-                  );
-                })()}
                 {selectedDayDrinks.length > 0 && (
                   <View style={[styles.calorieBadge, { backgroundColor: themeColors.warningSoft }]}>
                     <Text style={[styles.calorieBadgeText, { color: themeColors.warning }]}>
