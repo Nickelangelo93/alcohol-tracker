@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,6 +12,8 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '../../src/context/ThemeContext';
 import { useTranslation } from '../../src/context/LanguageContext';
 import { useDrinks } from '../../src/context/DrinkContext';
+import { confirmAction } from '../../src/utils/confirm';
+import { SwipeableRow } from '../../src/components/SwipeableRow';
 import { Drink } from '../../src/types';
 import { calculatePeakBAC, formatBAC, getBacLevel } from '../../src/utils/bac';
 import {
@@ -78,24 +79,10 @@ export default function HistoryScreen() {
     setRefreshing(false);
   }, [loadMonthData, loadSelectedDayDrinks, refreshData]);
 
-  const handleDeleteDrink = (drink: Drink) => {
-    const drinkLabel = (t.drinks.labels[drink.type] || drink.type).toLowerCase();
-    Alert.alert(
-      t.history.deleteDrinkTitle,
-      t.history.deleteDrinkMessage(drinkLabel),
-      [
-        { text: t.history.cancel, style: 'cancel' },
-        {
-          text: t.history.delete,
-          style: 'destructive',
-          onPress: async () => {
-            await removeDrink(drink.id);
-            await loadSelectedDayDrinks();
-            await loadMonthData();
-          },
-        },
-      ]
-    );
+  const handleDeleteDrink = async (drink: Drink) => {
+    await removeDrink(drink.id);
+    await loadSelectedDayDrinks();
+    await loadMonthData();
   };
 
   const { start: monthStart, end: monthEnd } = getMonthRange(currentMonth);
@@ -273,40 +260,44 @@ export default function HistoryScreen() {
               </View>
             ) : (
               selectedDayDrinks.map((drink, index) => (
-                <TouchableOpacity
+                <SwipeableRow
                   key={drink.id}
-                  style={[
-                    styles.drinkItem,
-                    index < selectedDayDrinks.length - 1 && {
-                      borderBottomColor: themeColors.border,
-                      borderBottomWidth: 1,
-                    },
-                  ]}
-                  onLongPress={() => handleDeleteDrink(drink)}
-                  activeOpacity={0.7}
+                  onDelete={() => handleDeleteDrink(drink)}
+                  deleteText={t.history.delete}
                 >
-                  <View style={styles.drinkLeft}>
-                    <View style={[styles.drinkIconBg, { backgroundColor: themeColors.primarySoft }]}>
-                      <Text style={styles.drinkEmoji}>{drinkEmojis[drink.type]}</Text>
+                  <View
+                    style={[
+                      styles.drinkItem,
+                      { backgroundColor: themeColors.surface },
+                      index < selectedDayDrinks.length - 1 && {
+                        borderBottomColor: themeColors.border,
+                        borderBottomWidth: 1,
+                      },
+                    ]}
+                  >
+                    <View style={styles.drinkLeft}>
+                      <View style={[styles.drinkIconBg, { backgroundColor: themeColors.primarySoft }]}>
+                        <Text style={styles.drinkEmoji}>{drinkEmojis[drink.type]}</Text>
+                      </View>
+                      <View>
+                        <Text style={[styles.drinkType, { color: themeColors.text }]}>
+                          {t.drinks.labels[drink.type] || drink.type}
+                        </Text>
+                        <Text style={[styles.drinkTime, { color: themeColors.textMuted }]}>
+                          {formatTime(drink.timestamp)}
+                        </Text>
+                      </View>
                     </View>
-                    <View>
-                      <Text style={[styles.drinkType, { color: themeColors.text }]}>
-                        {t.drinks.labels[drink.type] || drink.type}
+                    <View style={styles.drinkRight}>
+                      <Text style={[styles.drinkCalories, { color: themeColors.textSecondary }]}>
+                        {drinkCalories[drink.type] || 150} kcal
                       </Text>
-                      <Text style={[styles.drinkTime, { color: themeColors.textMuted }]}>
-                        {formatTime(drink.timestamp)}
+                      <Text style={[styles.swipeHint, { color: themeColors.textMuted }]}>
+                        ‹
                       </Text>
                     </View>
                   </View>
-                  <View style={styles.drinkRight}>
-                    <Text style={[styles.drinkCalories, { color: themeColors.textSecondary }]}>
-                      {drinkCalories[drink.type] || 150} kcal
-                    </Text>
-                    <Text style={[styles.deleteHint, { color: themeColors.textMuted }]}>
-                      ✕
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                </SwipeableRow>
               ))
             )}
           </AnimatedView>
@@ -493,8 +484,8 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xs,
     fontWeight: '600',
   },
-  deleteHint: {
-    fontSize: fontSize.md,
-    opacity: 0.4,
+  swipeHint: {
+    fontSize: fontSize.lg,
+    opacity: 0.3,
   },
 });

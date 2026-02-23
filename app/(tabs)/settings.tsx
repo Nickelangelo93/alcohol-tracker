@@ -7,10 +7,10 @@ import {
   ScrollView,
   Switch,
   TextInput,
-  Alert,
   Platform,
 } from 'react-native';
 import { UserGender } from '../../src/types';
+import { confirmAction, showAlert } from '../../src/utils/confirm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '../../src/context/ThemeContext';
@@ -46,7 +46,7 @@ export default function SettingsScreen() {
     try {
       const drinks = await getAllDrinksForExport();
       if (drinks.length === 0) {
-        Alert.alert(t.settings.exportNoData, t.settings.exportNoDataMsg);
+        showAlert(t.settings.exportNoData, t.settings.exportNoDataMsg);
         return;
       }
       let csv = 'id,type,timestamp,datetime,created_at\n';
@@ -73,13 +73,13 @@ export default function SettingsScreen() {
         }
       }
     } catch (error) {
-      Alert.alert(t.settings.error, t.settings.exportErrorMsg);
+      showAlert(t.settings.error, t.settings.exportErrorMsg);
     }
   };
 
   const parseCsvContent = (content: string) => {
     const lines = content.trim().split('\n');
-    if (lines.length < 2) { Alert.alert(t.settings.error, t.settings.importErrorNoData); return; }
+    if (lines.length < 2) { showAlert(t.settings.error, t.settings.importErrorNoData); return; }
     const drinks = [];
     for (let i = 1; i < lines.length; i++) {
       const parts = lines[i].split(',');
@@ -90,18 +90,18 @@ export default function SettingsScreen() {
         });
       }
     }
-    if (drinks.length === 0) { Alert.alert(t.settings.error, t.settings.importErrorNoValid); return; }
-    Alert.alert(t.settings.importTitle, t.settings.importConfirm(drinks.length), [
-      { text: t.settings.importCancel, style: 'cancel' },
-      {
-        text: t.settings.importButton,
-        onPress: async () => {
-          const imported = await importDrinks(drinks);
-          await refreshData();
-          Alert.alert(t.settings.importSuccess, t.settings.importSuccessMsg(imported));
-        },
+    if (drinks.length === 0) { showAlert(t.settings.error, t.settings.importErrorNoValid); return; }
+    confirmAction(
+      t.settings.importTitle,
+      t.settings.importConfirm(drinks.length),
+      async () => {
+        const imported = await importDrinks(drinks);
+        await refreshData();
+        showAlert(t.settings.importSuccess, t.settings.importSuccessMsg(imported));
       },
-    ]);
+      t.settings.importButton,
+      t.settings.importCancel,
+    );
   };
 
   const handleImport = async () => {
@@ -124,23 +124,22 @@ export default function SettingsScreen() {
         parseCsvContent(content);
       }
     } catch (error) {
-      Alert.alert(t.settings.error, t.settings.importErrorMsg);
+      showAlert(t.settings.error, t.settings.importErrorMsg);
     }
   };
 
   const handleReset = () => {
-    Alert.alert(t.settings.resetDataTitle, t.settings.resetDataMessage, [
-      { text: t.settings.importCancel, style: 'cancel' },
-      {
-        text: t.settings.resetDataConfirm,
-        style: 'destructive',
-        onPress: async () => {
-          await deleteAllDrinks();
-          await refreshData();
-          Alert.alert(t.settings.resetDataSuccess, t.settings.resetDataSuccessMsg);
-        },
+    confirmAction(
+      t.settings.resetDataTitle,
+      t.settings.resetDataMessage,
+      async () => {
+        await deleteAllDrinks();
+        await refreshData();
+        showAlert(t.settings.resetDataSuccess, t.settings.resetDataSuccessMsg);
       },
-    ]);
+      t.settings.resetDataConfirm,
+      t.settings.importCancel,
+    );
   };
 
   const cardShadow = theme === 'dark' ? shadows.cardDark : shadows.card;
