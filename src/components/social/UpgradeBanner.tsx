@@ -10,14 +10,17 @@ export function UpgradeBanner() {
   const { t } = useTranslation();
   const { upgradeToGoogle, upgradeToApple } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleUpgrade = async (method: 'google' | 'apple') => {
     setLoading(true);
+    setError(null);
     try {
       if (method === 'google') await upgradeToGoogle();
       else await upgradeToApple();
-    } catch (error) {
-      console.error('Upgrade error:', error);
+    } catch (err: any) {
+      console.error('Upgrade error:', err);
+      setError(err?.message || 'Upgrade failed');
     } finally {
       setLoading(false);
     }
@@ -34,6 +37,12 @@ export function UpgradeBanner() {
       <Text style={[styles.subtitle, { color: themeColors.textSecondary }]}>
         {t.social.auth.upgradeSubtitle}
       </Text>
+
+      {error && (
+        <Text style={{ color: '#EF4444', fontSize: 13, marginBottom: 12, textAlign: 'center' }}>
+          {error}
+        </Text>
+      )}
 
       <TouchableOpacity
         style={[styles.button, styles.googleButton]}

@@ -10,15 +10,18 @@ export function AuthPrompt() {
   const { t } = useTranslation();
   const { signInGoogle, signInApple, signInAsGuest } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignIn = async (method: 'google' | 'apple' | 'guest') => {
     setLoading(method);
+    setError(null);
     try {
       if (method === 'google') await signInGoogle();
       else if (method === 'apple') await signInApple();
       else await signInAsGuest();
-    } catch (error) {
-      console.error('Sign in error:', error);
+    } catch (err: any) {
+      console.error('Sign in error:', err);
+      setError(err?.message || 'Sign in failed');
     } finally {
       setLoading(null);
     }
@@ -35,6 +38,12 @@ export function AuthPrompt() {
       <Text style={[styles.subtitle, { color: themeColors.textSecondary }]}>
         {t.social.auth.subtitle}
       </Text>
+
+      {error && (
+        <Text style={{ color: '#EF4444', fontSize: 13, marginBottom: 12, textAlign: 'center' }}>
+          {error}
+        </Text>
+      )}
 
       <TouchableOpacity
         style={[styles.button, styles.googleButton]}
