@@ -28,18 +28,25 @@ export function LiveSessionSection() {
   const [joining, setJoining] = useState(false);
   const [createdCode, setCreatedCode] = useState<string | null>(null);
   const [joinError, setJoinError] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
 
   const cardShadow = theme === 'dark' ? shadows.cardDark : shadows.card;
 
   const handleStart = async () => {
     if (!sessionName.trim()) return;
     setStarting(true);
+    setStartError(null);
     try {
       const code = await startSession(sessionName.trim());
-      setCreatedCode(code);
-      setSessionName('');
-    } catch (error) {
+      if (code) {
+        setCreatedCode(code);
+        setSessionName('');
+      } else {
+        setStartError('Could not create session. Make sure your profile is set up.');
+      }
+    } catch (error: any) {
       console.error('Start session error:', error);
+      setStartError(error?.message || 'Failed to create session');
     } finally {
       setStarting(false);
     }
@@ -189,6 +196,12 @@ export function LiveSessionSection() {
             <Text style={styles.startText}>{t.social.live.startSession}</Text>
           )}
         </TouchableOpacity>
+
+        {startError && (
+          <Text style={[styles.errorText, { color: themeColors.danger, marginTop: spacing.sm }]}>
+            {startError}
+          </Text>
+        )}
 
         {createdCode && (
           <TouchableOpacity
