@@ -90,16 +90,18 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     if (!user || !userProfile) return '';
 
     const joinCode = generateJoinCode();
-    const id = await firestoreCreateSession({
+    const sessionData: any = {
       name,
       joinCode,
       hostUid: user.uid,
-      groupId,
       memberUids: [user.uid],
       status: 'active',
       createdAt: Date.now(),
       expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24h
-    });
+    };
+    if (groupId) sessionData.groupId = groupId;
+
+    const id = await firestoreCreateSession(sessionData);
 
     // Add self as participant
     await setParticipant(id, {
