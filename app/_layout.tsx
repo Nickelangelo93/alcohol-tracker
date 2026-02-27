@@ -5,6 +5,7 @@ import { Platform, StyleSheet } from 'react-native';
 import { ThemeProvider, useTheme } from '../src/context/ThemeContext';
 import { LanguageProvider } from '../src/context/LanguageContext';
 import { DrinkProvider } from '../src/context/DrinkContext';
+import { AuthProvider } from '../src/context/AuthContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { REVENUECAT_API_KEY } from '../src/constants/purchases';
 
@@ -79,9 +80,11 @@ export default function RootLayout() {
     >
       <ThemeProvider>
         <LanguageProvider>
-          <DrinkProvider>
-            <RootLayoutInner />
-          </DrinkProvider>
+          <AuthProvider>
+            <DrinkProvider>
+              <RootLayoutInner />
+            </DrinkProvider>
+          </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
     </GestureHandlerRootView>

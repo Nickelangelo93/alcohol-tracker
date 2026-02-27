@@ -71,6 +71,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="social"
+        options={{
+          title: t.tabs.social,
+          tabBarIcon: ({ focused }) => <TabIcon icon="🍻" focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: t.tabs.settings,
