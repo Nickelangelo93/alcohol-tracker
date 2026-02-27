@@ -13,6 +13,7 @@ import { ProfileSetupModal } from '../../src/components/social/ProfileSetupModal
 import { FriendsSection } from '../../src/components/social/FriendsSection';
 import { GroupsSection } from '../../src/components/social/GroupsSection';
 import { LiveSessionSection } from '../../src/components/social/LiveSessionSection';
+import { UpgradeBanner } from '../../src/components/social/UpgradeBanner';
 import { SocialSection } from '../../src/types/social';
 import { spacing, fontSize } from '../../src/constants/theme';
 
@@ -21,7 +22,7 @@ const AnimatedView = Animated.createAnimatedComponent(View);
 function SocialContent() {
   const { themeColors } = useTheme();
   const { t } = useTranslation();
-  const { user, userProfile, isLoading } = useAuth();
+  const { user, userProfile, isLoading, isAnonymous } = useAuth();
   const [activeSection, setActiveSection] = useState<SocialSection>('friends');
 
   // Not signed in yet
@@ -93,6 +94,12 @@ function SocialContent() {
               labels={t.social.tabs}
             />
           </AnimatedView>
+
+          {isAnonymous && (
+            <AnimatedView entering={FadeInDown.delay(150).duration(500).springify().damping(18)}>
+              <UpgradeBanner />
+            </AnimatedView>
+          )}
 
           <AnimatedView entering={FadeInDown.delay(200).duration(500).springify().damping(18)}>
             {activeSection === 'friends' && <FriendsSection />}

@@ -53,7 +53,7 @@ export interface AppSettings {
 
 export const DEFAULT_SETTINGS: AppSettings = {
   dailyLimit: 3,
-  themeMode: 'dark',
+  themeMode: 'light',
   notificationsEnabled: false,
   reminderTime: '21:00',
   limitWarningEnabled: false,
