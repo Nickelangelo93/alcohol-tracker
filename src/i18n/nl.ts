@@ -236,6 +236,8 @@ const nl = {
       friendCodeLabel: 'Jouw vriendencode',
       friendCodeCopied: 'Gekopieerd!',
       tapToCopy: 'Tik om te kopiëren',
+      editTitle: 'Profiel bewerken',
+      editButton: 'Bewerken',
     },
     friends: {
       title: 'Vrienden',

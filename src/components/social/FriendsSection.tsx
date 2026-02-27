@@ -14,6 +14,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useSocial } from '../../context/SocialContext';
 import { spacing, borderRadius, fontSize, shadows } from '../../constants/theme';
 import { FriendRequestCard } from './FriendRequestCard';
+import { EditProfileModal } from './EditProfileModal';
 
 export function FriendsSection() {
   const { themeColors, theme } = useTheme();
@@ -24,6 +25,7 @@ export function FriendsSection() {
   const [adding, setAdding] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [editProfileVisible, setEditProfileVisible] = useState(false);
 
   const cardShadow = theme === 'dark' ? shadows.cardDark : shadows.card;
 
@@ -51,24 +53,40 @@ export function FriendsSection() {
 
   return (
     <View>
-      {/* My Friend Code */}
+      {/* My Profile + Friend Code */}
       {userProfile && (
-        <TouchableOpacity
-          style={[styles.codeCard, { backgroundColor: themeColors.surface }, cardShadow]}
-          onPress={handleCopyCode}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.codeLabel, { color: themeColors.textSecondary }]}>
-            {t.social.profile.friendCodeLabel}
-          </Text>
-          <Text style={[styles.codeValue, { color: themeColors.primary }]}>
-            {userProfile.friendCode}
-          </Text>
-          <Text style={[styles.codeTap, { color: themeColors.textMuted }]}>
-            {copied ? t.social.profile.friendCodeCopied : t.social.profile.tapToCopy}
-          </Text>
-        </TouchableOpacity>
+        <View style={[styles.codeCard, { backgroundColor: themeColors.surface }, cardShadow]}>
+          <View style={styles.profileRow}>
+            <View style={[styles.profileAvatar, { backgroundColor: themeColors.primarySoft }]}>
+              <Text style={styles.profileAvatarText}>{userProfile.avatar}</Text>
+            </View>
+            <Text style={[styles.profileName, { color: themeColors.text }]}>
+              {userProfile.displayName}
+            </Text>
+            <TouchableOpacity
+              style={[styles.editButton, { backgroundColor: themeColors.primarySoft }]}
+              onPress={() => setEditProfileVisible(true)}
+            >
+              <Text style={[styles.editButtonText, { color: themeColors.primary }]}>
+                ✏️ {t.social.profile.editButton}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={handleCopyCode} activeOpacity={0.7} style={styles.codeSection}>
+            <Text style={[styles.codeLabel, { color: themeColors.textSecondary }]}>
+              {t.social.profile.friendCodeLabel}
+            </Text>
+            <Text style={[styles.codeValue, { color: themeColors.primary }]}>
+              {userProfile.friendCode}
+            </Text>
+            <Text style={[styles.codeTap, { color: themeColors.textMuted }]}>
+              {copied ? t.social.profile.friendCodeCopied : t.social.profile.tapToCopy}
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
+
+      <EditProfileModal visible={editProfileVisible} onClose={() => setEditProfileVisible(false)} />
 
       {/* Add Friend */}
       <View style={[styles.addCard, { backgroundColor: themeColors.surface }, cardShadow]}>
@@ -175,6 +193,38 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.xxl,
     padding: spacing.lg,
     marginBottom: spacing.lg,
+  },
+  profileRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+    gap: spacing.sm,
+  },
+  profileAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileAvatarText: {
+    fontSize: 20,
+  },
+  profileName: {
+    fontSize: fontSize.md,
+    fontWeight: '700',
+    flex: 1,
+  },
+  editButton: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.full,
+  },
+  editButtonText: {
+    fontSize: fontSize.xs,
+    fontWeight: '600',
+  },
+  codeSection: {
     alignItems: 'center',
   },
   codeLabel: {

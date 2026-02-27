@@ -238,6 +238,8 @@ const en: Translations = {
       friendCodeLabel: 'Your friend code',
       friendCodeCopied: 'Copied!',
       tapToCopy: 'Tap to copy',
+      editTitle: 'Edit profile',
+      editButton: 'Edit',
     },
     friends: {
       title: 'Friends',
