@@ -16,6 +16,8 @@ import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '../../src/context/ThemeContext';
 import { useTranslation } from '../../src/context/LanguageContext';
 import { useDrinks } from '../../src/context/DrinkContext';
+import { useAuth } from '../../src/context/AuthContext';
+import { EditProfileModal } from '../../src/components/social/EditProfileModal';
 import { getAllDrinksForExport, importDrinks, deleteAllDrinks } from '../../src/database/database';
 import { spacing, borderRadius, fontSize, shadows } from '../../src/constants/theme';
 import { TipJarSection } from '../../src/components/TipJarSection';
@@ -27,8 +29,10 @@ export default function SettingsScreen() {
   const { theme, themeColors, setTheme } = useTheme();
   const { t, language, setLanguage } = useTranslation();
   const { settings, updateSettings, refreshData } = useDrinks();
+  const { userProfile } = useAuth();
   const [limitInput, setLimitInput] = useState(String(settings.dailyLimit));
   const [weightInput, setWeightInput] = useState(settings.userWeight ? String(settings.userWeight) : '');
+  const [editProfileVisible, setEditProfileVisible] = useState(false);
 
   useEffect(() => {
     setWeightInput(settings.userWeight ? String(settings.userWeight) : '');
@@ -207,6 +211,39 @@ export default function SettingsScreen() {
               </TouchableOpacity>
             </View>
           </AnimatedView>
+
+          {/* Social Profile */}
+          {userProfile && (
+            <AnimatedView
+              entering={FadeInDown.delay(150).duration(500).springify().damping(18)}
+              style={[styles.section, ...cardStyle]}
+            >
+              <View style={styles.sectionHeader}>
+                <View style={[styles.sectionIcon, { backgroundColor: '#8b5cf618' }]}>
+                  <Text style={styles.sectionIconText}>👤</Text>
+                </View>
+                <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t.social.profile.editTitle}</Text>
+              </View>
+              <TouchableOpacity
+                style={[styles.dataButton, { backgroundColor: themeColors.surfaceLight }]}
+                onPress={() => setEditProfileVisible(true)}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.profileAvatar, { backgroundColor: themeColors.primarySoft }]}>
+                  <Text style={styles.profileAvatarText}>{userProfile.avatar}</Text>
+                </View>
+                <View style={styles.dataTextContainer}>
+                  <Text style={[styles.dataTitle, { color: themeColors.text }]}>{userProfile.displayName}</Text>
+                  <Text style={[styles.dataSub, { color: themeColors.textMuted }]}>
+                    {t.social.profile.editButton}
+                  </Text>
+                </View>
+                <Text style={[styles.dataArrow, { color: themeColors.textMuted }]}>›</Text>
+              </TouchableOpacity>
+            </AnimatedView>
+          )}
+
+          <EditProfileModal visible={editProfileVisible} onClose={() => setEditProfileVisible(false)} />
 
           {/* Profile (BAC) */}
           <AnimatedView
@@ -759,6 +796,16 @@ const styles = StyleSheet.create({
   genderLabel: {
     fontSize: fontSize.md,
     fontWeight: '600',
+  },
+  profileAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileAvatarText: {
+    fontSize: 20,
   },
   aboutTitle: {
     fontSize: fontSize.md,
