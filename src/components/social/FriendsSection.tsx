@@ -205,11 +205,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   addRow: {
-    flexDirection: 'row',
     gap: spacing.sm,
   },
   input: {
-    flex: 1,
     borderWidth: 1,
     borderRadius: borderRadius.md,
     paddingHorizontal: spacing.md,
@@ -217,7 +215,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
   },
   addButton: {
-    paddingHorizontal: spacing.lg,
+    paddingVertical: 12,
     borderRadius: borderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
