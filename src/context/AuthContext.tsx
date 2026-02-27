@@ -8,6 +8,7 @@ import {
   linkAnonymousToGoogle,
   linkAnonymousToApple,
   signOut as firebaseSignOut,
+  handleRedirectResult,
 } from '../firebase/auth';
 import {
   getUserProfile,
@@ -50,6 +51,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
     return unsubscribe;
+  }, []);
+
+  // Handle redirect result (mobile browser Google/Apple sign-in)
+  useEffect(() => {
+    handleRedirectResult().then(async (redirectUser) => {
+      if (redirectUser) {
+        const existing = await getUserProfile(redirectUser.uid);
+        if (!existing && !redirectUser.isAnonymous) {
+          const name = redirectUser.displayName || 'User';
+          await createUserProfile({
+            uid: redirectUser.uid,
+            displayName: name,
+            avatar: '🍻',
+            friendCode: generateFriendCode(name),
+            friendUids: [],
+            isAnonymous: false,
+            createdAt: Date.now(),
+          });
+        }
+        // If user was anonymous and linked, update profile
+        if (existing && !redirectUser.isAnonymous && existing.isAnonymous) {
+          await updateUserProfile(redirectUser.uid, { isAnonymous: false });
+        }
+      }
+    });
   }, []);
 
   // Subscribe to user profile in Firestore when user changes
