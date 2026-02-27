@@ -120,7 +120,7 @@ const nl = {
       purchaseError: 'Er ging iets mis met de aankoop. Probeer het later opnieuw.',
     },
     aboutTitle: 'Alcohol Tracker v1.0.0',
-    aboutText: 'Alle data wordt lokaal op je apparaat opgeslagen. Geen account nodig, geen data verzameling.',
+    aboutText: 'Je drinkgegevens worden lokaal op je apparaat opgeslagen. Sociale functies gebruiken een beveiligde cloud-verbinding.',
     // Alert strings
     exportNoData: 'Geen data',
     exportNoDataMsg: 'Er zijn nog geen drankjes om te exporteren.',

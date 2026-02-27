@@ -122,7 +122,7 @@ const en: Translations = {
       purchaseError: 'Something went wrong with the purchase. Please try again later.',
     },
     aboutTitle: 'Alcohol Tracker v1.0.0',
-    aboutText: 'All data is stored locally on your device. No account needed, no data collection.',
+    aboutText: 'Your drink data is stored locally on your device. Social features use a secure cloud connection.',
     // Alert strings
     exportNoData: 'No data',
     exportNoDataMsg: 'No drinks to export yet.',
