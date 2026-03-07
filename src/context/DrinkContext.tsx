@@ -75,7 +75,6 @@ export function DrinkProvider({ children }: { children: React.ReactNode }) {
       setDailyCalories(calories);
 
       // Get recent drinks (last 7 days)
-      const now = Date.now();
       const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
       const recent = await getDrinks(sevenDaysAgo, now);
       setRecentDrinks(recent.slice(0, 10));
