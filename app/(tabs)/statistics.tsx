@@ -16,16 +16,16 @@ import { useDrinks } from '../../src/context/DrinkContext';
 import { calculatePeakBAC, formatBAC } from '../../src/utils/bac';
 import { drinkCalories, spacing, borderRadius, fontSize, shadows } from '../../src/constants/theme';
 import {
-  getPreviousWeeks,
-  getPreviousMonths,
+  getPreviousDrinkingWeeks,
+  getPreviousDrinkingMonths,
   formatMonthYear,
   getDaysInRange,
   getMonthRange,
-  getDayStart,
-  getDayEnd,
+  getDrinkingDay,
+  getDrinkingDayISO,
 } from '../../src/utils/date';
 import { getDrinkCountForRange } from '../../src/database/database';
-import { startOfDay, differenceInCalendarDays, subDays } from 'date-fns';
+import { differenceInCalendarDays, subDays } from 'date-fns';
 
 const screenWidth = Dimensions.get('window').width - spacing.lg * 2;
 
@@ -56,7 +56,7 @@ export default function StatisticsScreen() {
 
   const loadStats = useCallback(async () => {
     try {
-      const weeks = getPreviousWeeks(8);
+      const weeks = getPreviousDrinkingWeeks(8);
       const weeklyData: number[] = [];
       const weeklyLabels: string[] = [];
       for (const week of weeks) {
@@ -65,11 +65,11 @@ export default function StatisticsScreen() {
         weeklyLabels.push(`W${weeks.indexOf(week) + 1}`);
       }
 
-      const months = getPreviousMonths(6);
+      const months = getPreviousDrinkingMonths(6);
       const monthlyData: number[] = [];
       const monthlyLabels: string[] = [];
       for (const month of months) {
-        const count = await getDrinkCountForRange(month.start.getTime(), month.end.getTime() + 86400000);
+        const count = await getDrinkCountForRange(month.start.getTime(), month.end.getTime());
         monthlyData.push(count);
         monthlyLabels.push(formatMonthYear(month.date).substring(0, 3));
       }
@@ -82,7 +82,7 @@ export default function StatisticsScreen() {
       const allDrinks = await getDrinksForRange(ninetyDaysAgo.getTime(), Date.now());
       const drinkDates = new Set<string>();
       allDrinks.forEach((d) => {
-        drinkDates.add(startOfDay(new Date(d.timestamp)).toISOString());
+        drinkDates.add(getDrinkingDayISO(d.timestamp));
       });
 
       const currentWeek = weeks[weeks.length - 1];
@@ -99,7 +99,7 @@ export default function StatisticsScreen() {
       const drinkingDaysSet = new Set<string>();
       let totalCalories30Days = 0;
       last30DaysDrinks.forEach((d) => {
-        drinkingDaysSet.add(startOfDay(new Date(d.timestamp)).toISOString());
+        drinkingDaysSet.add(getDrinkingDayISO(d.timestamp));
         totalCalories30Days += drinkCalories[d.type] || 150;
       });
       const drinkingDaysCount = drinkingDaysSet.size;
@@ -110,8 +110,9 @@ export default function StatisticsScreen() {
       let longestStreak = 0;
       let currentStreak = 0;
       let tempStreak = 0;
+      const todayDrinkingDay = getDrinkingDay(today.getTime());
       for (let i = 0; i <= 90; i++) {
-        const dayKey = startOfDay(subDays(today, i)).toISOString();
+        const dayKey = subDays(todayDrinkingDay, i).toISOString();
         if (!drinkDates.has(dayKey)) {
           tempStreak++;
           if (i === 0 || currentStreak > 0) currentStreak = tempStreak;
@@ -124,19 +125,20 @@ export default function StatisticsScreen() {
       longestStreak = Math.max(longestStreak, tempStreak);
 
       const { start: monthStart, end: monthEnd } = getMonthRange(today);
-      const daysInMonth = getDaysInRange(monthStart, today);
+      const daysInMonth = getDaysInRange(monthStart, todayDrinkingDay);
       let dryDaysThisMonth = 0;
       for (const day of daysInMonth) {
-        if (!drinkDates.has(startOfDay(day).toISOString())) dryDaysThisMonth++;
+        if (!drinkDates.has(day.toISOString())) dryDaysThisMonth++;
       }
 
       let highestBacThisMonth = 0;
       let avgBacPerDrinkingDay = 0;
       if (settings.userWeight && settings.userGender) {
-        const monthDrinks = await getDrinksForRange(monthStart.getTime(), monthEnd.getTime() + 86400000);
+        // Extend fetch range by 6 hours to capture early-morning boundary drinks
+        const monthDrinks = await getDrinksForRange(monthStart.getTime(), monthEnd.getTime() + 86400000 + 6 * 3600000);
         const dayBuckets: Record<string, typeof monthDrinks> = {};
         monthDrinks.forEach((d) => {
-          const key = startOfDay(new Date(d.timestamp)).toISOString();
+          const key = getDrinkingDayISO(d.timestamp);
           if (!dayBuckets[key]) dayBuckets[key] = [];
           dayBuckets[key].push(d);
         });

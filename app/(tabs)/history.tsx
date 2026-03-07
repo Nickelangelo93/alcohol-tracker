@@ -27,11 +27,12 @@ import {
   formatMonthYear,
   getDaysInRange,
   getMonthRange,
-  getDayStart,
-  getDayEnd,
   formatDayOfMonth,
   isSameDayCheck,
   getDateLocale,
+  getDrinkingDayStart,
+  getDrinkingDayEnd,
+  getDrinkingDayKey,
 } from '../../src/utils/date';
 import { addMonths, subMonths, startOfWeek, endOfWeek, isToday, format } from 'date-fns';
 
@@ -52,18 +53,20 @@ export default function HistoryScreen() {
     const { start, end } = getMonthRange(currentMonth);
     const calStart = startOfWeek(start, { weekStartsOn: 1 });
     const calEnd = endOfWeek(end, { weekStartsOn: 1 });
-    const drinks = await getDrinksForRange(calStart.getTime(), calEnd.getTime() + 86400000);
+    // Extend range by 6 hours to capture early-morning boundary drinks
+    const drinks = await getDrinksForRange(calStart.getTime(), calEnd.getTime() + 86400000 + 6 * 3600000);
     const dates = new Set<string>();
     drinks.forEach((d) => {
-      const date = new Date(d.timestamp);
-      dates.add(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`);
+      // Use drinking day key: drinks before 6 AM map to previous calendar day
+      dates.add(getDrinkingDayKey(d.timestamp));
     });
     setMonthDrinkDates(dates);
   }, [currentMonth, getDrinksForRange]);
 
   const loadSelectedDayDrinks = useCallback(async () => {
-    const start = getDayStart(selectedDate);
-    const end = getDayEnd(selectedDate);
+    // Use drinking day boundaries: selected date 6 AM → next day 5:59:59 AM
+    const start = getDrinkingDayStart(selectedDate);
+    const end = getDrinkingDayEnd(selectedDate);
     const drinks = await getDrinksForRange(start.getTime(), end.getTime() + 1);
     setSelectedDayDrinks(drinks);
   }, [selectedDate, getDrinksForRange]);

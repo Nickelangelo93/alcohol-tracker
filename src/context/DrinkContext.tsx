@@ -11,7 +11,7 @@ import {
   getTodayWaterCount,
   addWater as dbAddWater,
 } from '../database/database';
-import { getDayStart, getDayEnd } from '../utils/date';
+import { getDrinkingDay, getDrinkingDayStart, getDrinkingDayEnd } from '../utils/date';
 import { drinkCalories } from '../constants/theme';
 
 interface DrinkContextType {
@@ -58,9 +58,11 @@ export function DrinkProvider({ children }: { children: React.ReactNode }) {
       setSettings(appSettings);
 
       // Get today's drinks for daily count, calories, and BAC
-      const today = new Date();
-      const dayStart = getDayStart(today);
-      const dayEnd = getDayEnd(today);
+      // Uses 6 AM drinking day boundary: drinks after midnight count as previous night
+      const now = Date.now();
+      const drinkingDay = getDrinkingDay(now);
+      const dayStart = getDrinkingDayStart(drinkingDay);
+      const dayEnd = getDrinkingDayEnd(drinkingDay);
       const todaysDrinks = await getDrinks(dayStart.getTime(), dayEnd.getTime() + 1);
       setTodayDrinks(todaysDrinks);
       setDailyCount(todaysDrinks.length);
